@@ -6,40 +6,31 @@ const SubmitRecipe = () => {
     title: "",
     ingredients: "",
     recipe: "",
-    image: "",
+    image_url: "",
   });
 
-  const { addRecipe } = useRecipes(); // Access addRecipe from RecipesContext
+  const { addRecipe } = useRecipes();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const getCurrentUserId = () => {
-    const userString = localStorage.getItem("user"); // Replace "user" with the actual key used to store user info
-    if (userString) {
-      const user = JSON.parse(userString);
-      return user.id; // Ensure the ID field matches how it's stored within the user object
-    }
-    return null;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const userId = localStorage.getItem("userId"); // Directly retrieve the user ID
-    const authToken = localStorage.getItem("authToken"); // Retrieve the authentication token
+    const userId = localStorage.getItem("userId");
+    const authToken = localStorage.getItem("authToken");
 
     if (userId && authToken) {
-      const recipeData = { ...formData, userId };
+      const recipeData = { ...formData, image_url: formData.image, userId };
 
       try {
         const response = await fetch("http://localhost:5000/api/recipes", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+            Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify(recipeData),
         });
@@ -53,7 +44,7 @@ const SubmitRecipe = () => {
 
         const newRecipe = await response.json();
         addRecipe(newRecipe);
-        setFormData({ title: "", ingredients: "", recipe: "", image: "" });
+        setFormData({ title: "", ingredients: "", recipe: "", image_url: "" });
       } catch (error) {
         console.error("Error submitting recipe:", error);
       }

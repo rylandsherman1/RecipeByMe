@@ -1,12 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useUser } from "./UserContext"; // Import useUser hook
 
-const NavBar = ({ currentUser, logout }) => {
+const NavBar = () => {
+  const { currentUser, logout } = useUser(); // Access currentUser and logout from UserContext
+
   return (
     <nav className="navbar">
-      {/* Display the currently signed-in user's username if available */}
       {currentUser && (
-        <p className="signed-in-as">Signed in as: {currentUser.username}</p>
+        <p className="signed-in-as">Signed in as: {currentUser.username}</p> // Display the username if currentUser is present
       )}
       <h2 className="site-title">Welcome to RecipeByMe!</h2>
       <ul className="nav-list">
@@ -16,13 +18,13 @@ const NavBar = ({ currentUser, logout }) => {
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/myprofile" className="nav-link">
-            My Profile
+          <Link to="/about" className="nav-link">
+            About
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/about" className="nav-link">
-            About Us
+          <Link to="/myprofile" className="nav-link">
+            My Profile
           </Link>
         </li>
         {!currentUser ? (
@@ -33,13 +35,10 @@ const NavBar = ({ currentUser, logout }) => {
           </li>
         ) : (
           <li className="nav-item">
-            <button
-              onClick={logout}
-              className="nav-link"
-              style={{ border: "none", background: "none" }}
-            >
+            <button onClick={logout} className="nav-link logout-button">
               Logout
-            </button>
+            </button>{" "}
+            {/* // Call the logout function on click */}
           </li>
         )}
       </ul>

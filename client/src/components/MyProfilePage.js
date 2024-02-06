@@ -2,52 +2,51 @@ import React from "react";
 import RecipeCard from "./RecipeCard"; // Assuming RecipeCard is a component you use to display each recipe
 
 const MyProfilePage = ({
-  isAuthenticated,
   currentUser,
-  userRecipes,
-  likedRecipes,
+  userRecipes = [],
+  likedRecipes = [],
 }) => {
-  if (!isAuthenticated) {
-    return (
-      <div className="my-profile-page">
-        <h2>My Profile</h2>
-        <p>Please sign in or sign up to view your profile.</p>
-        {/* Redirect to login page or show login/signup component here */}
-      </div>
-    );
-  }
+  // Check if currentUser is defined before accessing its properties
+  const profileHeader = currentUser
+    ? `${currentUser.username}'s Profile`
+    : "Profile";
 
-  // Assuming userRecipes is an array of all recipes and currentUser.id matches the userId in each recipe
-  const myRecipes = userRecipes.filter(
-    (recipe) => recipe.userId === currentUser.id
-  );
+  // Filtering user's own recipes, ensure currentUser is defined
+  const myRecipes = currentUser
+    ? userRecipes.filter((recipe) => recipe.userId === currentUser.id)
+    : [];
+  const myLikedRecipes = currentUser ? likedRecipes : [];
+
+  // Conditional rendering based on available recipes
+  const renderRecipes = (recipes, sectionTitle) => {
+    if (recipes.length > 0) {
+      return (
+        <section>
+          <h3>{sectionTitle}</h3>
+          <div className="recipe-grid">
+            {recipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </div>
+        </section>
+      );
+    }
+    return <p>No {sectionTitle.toLowerCase()} available.</p>;
+  };
 
   return (
     <div className="my-profile-page">
-      <h2>My Profile</h2>
-      <div className="user-details">
-        <p>Username: {currentUser.username}</p>
-        <p>Email: {currentUser.email}</p>
-        {/* Display other user details here */}
-      </div>
-
-      <section>
-        <h3>My Recipes</h3>
-        <div className="recipe-grid">
-          {myRecipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
+      <h2>{profileHeader}</h2>
+      {currentUser && (
+        <div className="user-details">
+          <p>Username: {currentUser.username}</p>
+          <p>Email: {currentUser.email}</p>
+          {/* Display other user details here */}
         </div>
-      </section>
+      )}
 
-      <section>
-        <h3>Recipes I Like</h3>
-        <div className="recipe-grid">
-          {likedRecipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
-        </div>
-      </section>
+      {renderRecipes(myRecipes, "My Recipes")}
+      {renderRecipes(myLikedRecipes, "Recipes I Like")}
     </div>
   );
 };
