@@ -1,30 +1,52 @@
 import React, { useState } from "react";
+import { useRecipes } from "./RecipesContext"; // Adjust the path if necessary
 
 const SubmitRecipe = () => {
-  // State to manage form input fields
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
-    cookingTime: "",
-    difficulty: "",
-    ingredients: [],
-    categories: [],
-    // Add more fields as needed
+    ingredients: "",
+    recipe: "",
+    image: "", // Changed from `image_url` to `image` to match form state
   });
 
-  // Function to handle form input changes
+  const { addRecipe } = useRecipes();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Function to handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Send the formData to your backend for recipe creation
-    console.log(formData);
-    // Reset the form fields or navigate to a different page
-    // depending on your application logic
+
+    // Remove the user_id from recipeData for testing purposes
+    const recipeData = {
+      ...formData,
+    };
+
+    console.log("Submitting recipe:", recipeData); // Debugging
+
+    try {
+      const response = await fetch("http://localhost:5000/api/recipes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipeData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text(); // Get error details from response
+        throw new Error(`HTTP error! status: ${response.status}, ${errorText}`);
+      }
+
+      const newRecipe = await response.json();
+      addRecipe(newRecipe);
+
+      setFormData({ title: "", ingredients: "", recipe: "", image: "" }); // Reset form
+    } catch (error) {
+      console.error("Error submitting recipe:", error);
+    }
   };
 
   return (
@@ -43,38 +65,36 @@ const SubmitRecipe = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="description">Description</label>
+          <label htmlFor="ingredients">Ingredients</label>
           <textarea
-            id="description"
-            name="description"
-            value={formData.description}
+            id="ingredients"
+            name="ingredients"
+            value={formData.ingredients}
             onChange={handleInputChange}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="cookingTime">Cooking Time (minutes)</label>
-          <input
-            type="number"
-            id="cookingTime"
-            name="cookingTime"
-            value={formData.cookingTime}
+          <label htmlFor="recipe">Recipe</label>
+          <textarea
+            id="recipe"
+            name="recipe"
+            value={formData.recipe}
             onChange={handleInputChange}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="difficulty">Difficulty</label>
+          <label htmlFor="image">Image URL</label>
           <input
             type="text"
-            id="difficulty"
-            name="difficulty"
-            value={formData.difficulty}
+            id="image"
+            name="image"
+            value={formData.image}
             onChange={handleInputChange}
             required
           />
         </div>
-        {/* Add fields for ingredients and categories here */}
         <div className="form-group">
           <button type="submit">Submit Recipe</button>
         </div>

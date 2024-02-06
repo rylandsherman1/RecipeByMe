@@ -1,20 +1,27 @@
 import React from "react";
+import Modal from "react-modal";
 
-const RecipeModal = ({ recipe, onClose }) => {
+Modal.setAppElement("#root"); // Assuming your root element has the ID 'root'
+
+const RecipeModal = ({ isOpen, recipe, onClose }) => {
   return (
-    <div className="recipe-modal">
-      <div className="modal-content">
-        <span className="close" onClick={onClose}>
-          &times;
-        </span>
-        <h2>{recipe.title}</h2>
-        <img src={recipe.image} alt={recipe.title} />
-        <p>Description: {recipe.description}</p>
-        <p>Cooking Time: {recipe.cookingTime} minutes</p>
-        <p>Difficulty: {recipe.difficulty}</p>
-        {/* Add more recipe details here */}
-      </div>
-    </div>
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      contentLabel="Recipe Details"
+      className="recipe-modal-content"
+      overlayClassName="recipe-modal-overlay"
+    >
+      {recipe && (
+        <div>
+          <h3>{recipe.title}</h3>
+          <img src={recipe.image_url} alt={recipe.title} />
+          <p>Ingredients: {recipe.ingredients}</p>
+          <p>Recipe: {recipe.recipe}</p>
+          <button onClick={onClose}>Close</button>
+        </div>
+      )}
+    </Modal>
   );
 };
 

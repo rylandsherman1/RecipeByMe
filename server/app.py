@@ -1,83 +1,121 @@
-# app.py
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, current_app
 from flask_restful import Api, Resource
-from flask_httpauth import HTTPTokenAuth
-from extensions import db, migrate  # Use the centralized extensions for db and migrate
-from config import Config  # Import the Config class
-from models import User, Recipe, Ingredient, Category  # Import models here
+from itsdangerous import URLSafeTimedSerializer
+
+# from flask_httpauth import HTTPTokenAuth
+from flask_cors import CORS
+from extensions import db, migrate
+from config import Config
+from models import User, Recipe, Category
 
 
 # Function to create the Flask application
 def create_app(config_class=Config):
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config_class)
 
     # Initialize extensions with the app
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Initialize Flask-RESTful and Flask-HTTPAuth
+    # Initialize Flask-RESTful
     api = Api(app)
-    auth = HTTPTokenAuth(scheme="Bearer")
 
-    @auth.verify_token
+    # Setup for Flask-HTTPAuth
+    # auth = HTTPTokenAuth(scheme="Bearer")
+    serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+
+    def generate_token(user_id):
+        return serializer.dumps(user_id, salt="user-auth")
+
+    # @auth.verify_token
     def verify_token(token):
-        # Implement your token verification logic here
-        return token == "your_secret_token"
+        try:
+            user_id = serializer.loads(token, salt="user-auth")
+            return User.query.get(user_id)
+        except:
+            return None
 
-    # Validation for recipe data
-    def validate_recipe_data(data):
-        if not data.get("title") or not data.get("description"):
-            return False, "Title and description are required."
-        return True, ""
-
-    # Error response helper
-    def error_response(status_code, message):
-        response = jsonify({"error": message})
-        response.status_code = status_code
-        return response
-
-    # Existing resource classes
-    class RecipeList(Resource):
-        @auth.login_required
-        def get(self):
-            recipes = Recipe.query.all()
-            return jsonify([recipe.serialize() for recipe in recipes])
-
-        @auth.login_required
+    class UserSignup(Resource):
         def post(self):
             data = request.get_json()
-            is_valid, message = validate_recipe_data(data)
-            if not is_valid:
-                return error_response(400, message)
 
-            new_recipe = Recipe(
-                title=data["title"],
-                description=data["description"],
-                user_id=data["user_id"],
-            )
-            db.session.add(new_recipe)
+            if User.query.filter_by(email=data["email"]).first():
+                return {"message": "Email already in use."}, 400
+
+            new_user = User(username=data["username"], email=data["email"])
+            new_user.password = data["password"]
+
+            db.session.add(new_user)
             db.session.commit()
-            return jsonify(new_recipe.serialize())
+
+            return {
+                "message": "User created successfully.",
+                "user": {"username": data["username"], "email": data["email"]},
+            }, 201
+
+    class UserLogin(Resource):
+        def post(self):
+            data = request.get_json()
+            user = User.query.filter_by(email=data["email"]).first()
+
+            if user and user.check_password(data["password"]):
+                token = generate_token(user.id)
+                return {"message": "Login successful.", "token": token}, 200
+            else:
+                return {"message": "Invalid credentials."}, 401
+
+    class RecipeList(Resource):
+        # @auth.login_required
+        def get(self):
+            try:
+                recipes = Recipe.query.all()
+                return jsonify([recipe.serialize() for recipe in recipes])
+            except Exception as e:
+                current_app.logger.error(f"Failed to fetch recipes: {str(e)}")
+                return {"message": "Failed to fetch recipes"}, 500
+
+        # @auth.login_required
+        def post(self):
+            try:
+                data = request.get_json()
+
+                new_recipe = Recipe(
+                    title=data["title"],
+                    ingredients=data["ingredients"],
+                    recipe=data["recipe"],
+                    image_url=data.get("image_url", ""),
+                )
+                db.session.add(new_recipe)
+                db.session.commit()
+                return jsonify(new_recipe.serialize()), 201
+            except Exception as e:
+                current_app.logger.error(f"Error adding new recipe: {e}")
+                return {"message": "Error adding new recipe", "error": str(e)}, 500
 
     class RecipeDetail(Resource):
-        @auth.login_required
+        # @auth.login_required
         def get(self, recipe_id):
             recipe = Recipe.query.get_or_404(recipe_id)
             return jsonify(recipe.serialize())
 
-        @auth.login_required
+        # @auth.login_required
         def put(self, recipe_id):
             recipe = Recipe.query.get_or_404(recipe_id)
             data = request.get_json()
+
             recipe.title = data.get("title", recipe.title)
-            recipe.description = data.get("description", recipe.description)
+            recipe.ingredients = data.get("ingredients", recipe.ingredients)
+            recipe.recipe = data.get("recipe", recipe.recipe)
+            recipe.image_url = data.get("image_url", recipe.image_url)
+
             db.session.commit()
             return jsonify(recipe.serialize())
 
-        @auth.login_required
+        # @auth.login_required
         def delete(self, recipe_id):
             recipe = Recipe.query.get_or_404(recipe_id)
             db.session.delete(recipe)
@@ -85,16 +123,18 @@ def create_app(config_class=Config):
             return jsonify({"message": "Recipe deleted"})
 
     # Add resources to Api
-    api.add_resource(RecipeList, "/recipes")
-    api.add_resource(RecipeDetail, "/recipes/<int:recipe_id>")
+    api.add_resource(UserSignup, "/api/signup")
+    api.add_resource(UserLogin, "/api/login")
+    api.add_resource(RecipeList, "/api/recipes")
+    api.add_resource(RecipeDetail, "/api/recipes/<int:recipe_id>")
 
     @app.route("/")
     def index():
-        return "<h1>Project Server</h1>"
+        return "<h1>Welcome to the Recipe App Server</h1>"
 
     return app
 
 
 if __name__ == "__main__":
-    app_instance = create_app()
-    app_instance.run(port=5555, debug=True)
+    app = create_app(Config)
+    app.run(port=5000, debug=True)
