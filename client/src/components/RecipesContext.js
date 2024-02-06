@@ -1,4 +1,3 @@
-// src/contexts/RecipesContext.js
 import React, { createContext, useState, useContext } from "react";
 
 const RecipesContext = createContext();
@@ -32,18 +31,14 @@ export const RecipesProvider = ({ children }) => {
           method: "DELETE",
         }
       );
-
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
-      }
 
-      // Update the recipes state after successful deletion
       setRecipes((prevRecipes) =>
         prevRecipes.filter((recipe) => recipe.id !== recipeId)
       );
     } catch (error) {
       console.error("Error deleting recipe:", error);
-      throw error;
     }
   };
 

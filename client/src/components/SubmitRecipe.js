@@ -1,51 +1,66 @@
 import React, { useState } from "react";
-import { useRecipes } from "./RecipesContext"; // Adjust the path if necessary
+import { useRecipes } from "./RecipesContext"; // Use this for recipes
 
 const SubmitRecipe = () => {
   const [formData, setFormData] = useState({
     title: "",
     ingredients: "",
     recipe: "",
-    image: "", // Changed from `image_url` to `image` to match form state
+    image: "",
   });
 
-  const { addRecipe } = useRecipes();
+  const { addRecipe } = useRecipes(); // Access addRecipe from RecipesContext
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const getCurrentUserId = () => {
+    const userString = localStorage.getItem("user"); // Replace "user" with the actual key used to store user info
+    if (userString) {
+      const user = JSON.parse(userString);
+      return user.id; // Ensure the ID field matches how it's stored within the user object
+    }
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Remove the user_id from recipeData for testing purposes
-    const recipeData = {
-      ...formData,
-    };
+    const userId = localStorage.getItem("userId"); // Directly retrieve the user ID
+    const authToken = localStorage.getItem("authToken"); // Retrieve the authentication token
 
-    console.log("Submitting recipe:", recipeData); // Debugging
+    if (userId && authToken) {
+      const recipeData = { ...formData, userId };
 
-    try {
-      const response = await fetch("http://localhost:5000/api/recipes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(recipeData),
-      });
+      try {
+        const response = await fetch("http://localhost:5000/api/recipes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header
+          },
+          body: JSON.stringify(recipeData),
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text(); // Get error details from response
-        throw new Error(`HTTP error! status: ${response.status}, ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(
+            `HTTP error! status: ${response.status}, ${errorText}`
+          );
+        }
+
+        const newRecipe = await response.json();
+        addRecipe(newRecipe);
+        setFormData({ title: "", ingredients: "", recipe: "", image: "" });
+      } catch (error) {
+        console.error("Error submitting recipe:", error);
       }
-
-      const newRecipe = await response.json();
-      addRecipe(newRecipe);
-
-      setFormData({ title: "", ingredients: "", recipe: "", image: "" }); // Reset form
-    } catch (error) {
-      console.error("Error submitting recipe:", error);
+    } else {
+      console.error(
+        "No current user information or authentication token available."
+      );
     }
   };
 

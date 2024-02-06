@@ -14,7 +14,9 @@ from models import User, Recipe, Category
 # Function to create the Flask application
 def create_app(config_class=Config):
     app = Flask(__name__)
-    CORS(app)
+    CORS(
+        app, supports_credentials=True, allow_headers=["Content-Type", "Authorization"]
+    )
     app.config.from_object(config_class)
 
     # Initialize extensions with the app
@@ -82,12 +84,19 @@ def create_app(config_class=Config):
         def post(self):
             try:
                 data = request.get_json()
+                user = verify_token(
+                    request.headers.get("Authorization").split(" ")[1]
+                )  # Token retrieval
+
+                if not user:
+                    return {"message": "Authentication required"}, 401
 
                 new_recipe = Recipe(
                     title=data["title"],
                     ingredients=data["ingredients"],
                     recipe=data["recipe"],
                     image_url=data.get("image_url", ""),
+                    user_id=user.id,  # Associate with current user
                 )
                 db.session.add(new_recipe)
                 db.session.commit()

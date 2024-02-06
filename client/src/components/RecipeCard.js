@@ -44,6 +44,7 @@ const RecipeCard = ({ recipe, onCardClick }) => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     // Create a new object with the updated data
     const updatedRecipe = {
@@ -90,7 +91,7 @@ const RecipeCard = ({ recipe, onCardClick }) => {
 
   return (
     <div className="recipe-card" onClick={() => onCardClick(recipe)}>
-      <img src={recipe.image} alt={recipe.title} />
+      <img src={recipe.image_url} alt={recipe.title} className="recipe-image"/>
       <h3>{recipe.title}</h3>
       {isEditing ? (
         <form onSubmit={handleEditSubmit}>
