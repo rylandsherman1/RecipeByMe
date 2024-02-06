@@ -1,6 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
 from extensions import db
-from .Association import recipe_ingredient, category_recipe
+from .Association import (
+    category_recipe,
+)  # Assuming you still need this for Category associations
 
 
 class Recipe(db.Model):
@@ -8,21 +9,24 @@ class Recipe(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    cooking_time = db.Column(db.Integer)
-    difficulty = db.Column(db.String(50))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    ingredients = db.Column(db.Text, nullable=False)  # Text field for ingredients
+    recipe = db.Column(db.Text, nullable=False)  # Detailed instructions
+    image_url = db.Column(db.String(255))  # URL to the recipe image
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
-    # No need to redefine the backref here, it's already specified in the User model.
     categories = db.relationship(
         "Category", secondary=category_recipe, back_populates="recipes"
     )
-    ingredients = db.relationship(
-        "Ingredient", secondary=recipe_ingredient, back_populates="recipes"
-    )
 
     def serialize(self):
-        return {"id": self.id, "title": self.title, "description": self.description}
+        return {
+            "id": self.id,
+            "title": self.title,
+            "ingredients": self.ingredients if self.ingredients else "",
+            "recipe": self.recipe if self.recipe else "",
+            "image_url": self.image_url if self.image_url else "",
+            "user_id": self.user_id,
+        }
 
     def __repr__(self):
         return f"<Recipe {self.title}>"

@@ -4,22 +4,31 @@ const LoginPage = () => {
   const [isLoginView, setIsLoginView] = useState(true); // Toggle view between login and sign up
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  // Additional state for sign up
   const [username, setUsername] = useState("");
+  const [currentUser, setCurrentUser] = useState(null); // Track the current user
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleUsernameChange = (e) => setUsername(e.target.value);
 
-  const handleLogin = () => {
-    // Implement login logic here
+  const handleLogin = async () => {
     console.log("Logging in with email:", email, "and password:", password);
-    // Integrate with your authentication logic
+    // Here, you would replace the console.log with a call to your backend API to authenticate the user
+    // For example:
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    if (response.ok) {
+      setCurrentUser(data.user); // Assuming the API response includes user data
+    } else {
+      alert(data.message); // Assuming the API response includes a message for failed logins
+    }
   };
 
-  const handleSignup = () => {
-    // Implement sign up logic here
+  const handleSignup = async () => {
     console.log(
       "Signing up with username:",
       username,
@@ -28,7 +37,36 @@ const LoginPage = () => {
       "and password:",
       password
     );
-    // Integrate with your authentication logic
+
+    try {
+      const response = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json(); // Assuming the server responds with JSON
+
+      if (response.ok) {
+        console.log("Signup successful", data);
+        // Here you might want to automatically log the user in or redirect them to the login page
+        // For example: setCurrentUser(data.user); if you have a state for the current user
+      } else {
+        // Handle server errors or validation errors
+        console.error("Signup failed", data.message); // Assuming the server sends back an error message
+        alert(`Signup failed: ${data.message}`); // Display error message to the user
+      }
+    } catch (error) {
+      // Handle network errors
+      console.error("Network error", error);
+      alert("Network error, please try again later.");
+    }
   };
 
   const toggleView = () => setIsLoginView(!isLoginView);
@@ -36,7 +74,7 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <h2>{isLoginView ? "Login" : "Sign Up"}</h2>
-      <form>
+      <form onSubmit={isLoginView ? handleLogin : handleSignup}>
         {!isLoginView && (
           <div className="form-group">
             <label>Username</label>
@@ -67,20 +105,16 @@ const LoginPage = () => {
           />
         </div>
         <div className="form-action">
-          {isLoginView ? (
-            <button type="button" onClick={handleLogin}>
-              Sign In
-            </button>
-          ) : (
-            <button type="button" onClick={handleSignup}>
-              Sign Up
-            </button>
-          )}
+          <button type="submit">{isLoginView ? "Sign In" : "Sign Up"}</button>
           <button type="button" onClick={toggleView}>
-            {isLoginView ? "Sign Up" : "Login"}
+            {isLoginView
+              ? "Need to create an account?"
+              : "Already have an account?"}
           </button>
         </div>
       </form>
+      {currentUser && <p>Welcome, {currentUser.username}!</p>}{" "}
+      {/* Display welcome message for logged-in users */}
     </div>
   );
 };
