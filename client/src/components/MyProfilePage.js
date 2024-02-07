@@ -1,62 +1,53 @@
-import React, { useState } from "react";
+import React from "react";
+import RecipeCard from "./RecipeCard"; // Assuming RecipeCard is a component you use to display each recipe
 
-const MyProfilePage = ({ isAuthenticated, userRecipes, likedRecipes }) => {
-  const [userData, setUserData] = useState({
-    username: "JohnDoe",
-    email: "johndoe@example.com",
-    // Add other user data fields here
-  });
-
-  // Function to handle changes in user data
-  const handleUserDataChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({
-      ...userData,
-      [name]: value,
-    });
-  };
-
-  // Function to save updated user data to the backend
-  const saveUserData = () => {
-    // Implement logic to save user data to the backend
-    console.log("Saving user data:", userData);
-    // Add POST request to save data
-  };
-
+const MyProfilePage = ({
+  isAuthenticated,
+  currentUser,
+  userRecipes,
+  likedRecipes,
+}) => {
   if (!isAuthenticated) {
     return (
       <div className="my-profile-page">
         <h2>My Profile</h2>
         <p>Please sign in or sign up to view your profile.</p>
-        {/* Add sign in/sign up link or button here */}
+        {/* Redirect to login page or show login/signup component here */}
       </div>
     );
   }
 
+  // Assuming userRecipes is an array of all recipes and currentUser.id matches the userId in each recipe
+  const myRecipes = userRecipes.filter(
+    (recipe) => recipe.userId === currentUser.id
+  );
+
   return (
     <div className="my-profile-page">
       <h2>My Profile</h2>
-      {/* User profile form */}
-      {/* ... */}
+      <div className="user-details">
+        <p>Username: {currentUser.username}</p>
+        <p>Email: {currentUser.email}</p>
+        {/* Display other user details here */}
+      </div>
 
       <section>
         <h3>My Recipes</h3>
-        {/* Render user's own recipes here */}
-        {/* This can be a list or grid of RecipeCard components */}
-        {userRecipes.map((recipe) => (
-          <div key={recipe.id}>{recipe.title}</div> // Replace with RecipeCard component if available
-        ))}
+        <div className="recipe-grid">
+          {myRecipes.map((recipe) => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+        </div>
       </section>
 
       <section>
         <h3>Recipes I Like</h3>
-        {/* Render liked recipes here */}
-        {likedRecipes.map((recipe) => (
-          <div key={recipe.id}>{recipe.title}</div> // Replace with RecipeCard component if available
-        ))}
+        <div className="recipe-grid">
+          {likedRecipes.map((recipe) => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+        </div>
       </section>
-
-      {/* Add other profile sections here */}
     </div>
   );
 };

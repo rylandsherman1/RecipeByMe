@@ -40,24 +40,42 @@ nav a {
 }
 
 /* Style recipe cards (customize as needed) */
+/* Style recipe cards (customize as needed) */
+/* Container for recipe cards */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Replace 300px with your desired card width */
+  grid-gap: 1rem;
+  padding: 1rem;
+}
+
+/* Individual recipe cards */
 .recipe-card {
   position: relative; /* Needed for absolute positioning of the like button */
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   overflow: hidden;
-  margin: 1rem;
   cursor: pointer;
-  padding-top: 10px; /* Provide space for the like button */
+  display: flex; /* Use flex layout */
+  flex-direction: column; /* Stack children vertically */
+  /* Remove margin if using grid-gap */
 }
 
 .recipe-card img {
-  max-width: 100%;
-  height: auto;
+  width: 100%; /* Make image fill the container */
+  height: 200px; /* Set a fixed height for the images */
+  object-fit: cover; /* Cover the area without stretching the image */
+  border-top-left-radius: 5px; /* Match the card's border radius */
+  border-top-right-radius: 5px; /* Match the card's border radius */
 }
 
 .recipe-card-content {
   padding: 1rem;
+  flex-grow: 1; /* Allow the content to fill the space after the image */
 }
 
 .like-section {
@@ -151,9 +169,10 @@ nav.navbar {
 }
 
 .new-recipe-button {
-  position: fixed;
+  position: fixed; /* or 'absolute' depending on your layout needs */
   bottom: 20px;
   right: 20px;
+  z-index: 1000; /* Higher z-index to ensure it's above other elements */
   height: 50px;
   width: 50px;
   border-radius: 50%;
@@ -164,6 +183,7 @@ nav.navbar {
   color: white;
   border: none;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for better visibility */
 }
 
 .new-recipe-form {
@@ -178,9 +198,10 @@ nav.navbar {
 }
 
 .new-recipe-container {
-  position: fixed;
+  position: fixed; /* Maintain the fixed positioning */
   bottom: 20px;
   right: 20px;
+  z-index: 1000; /* Same z-index as the button for consistency */
 }
 
 .dropdown-filter select {

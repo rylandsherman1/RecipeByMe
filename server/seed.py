@@ -25,7 +25,7 @@ with app.app_context():
         title="Chocolate Cake",
         ingredients="Flour, Sugar, Cocoa Powder, Baking Powder, Eggs, Milk, Vegetable Oil",
         recipe="Mix dry ingredients. Add eggs, milk, and oil. Bake at 350°F for 30 minutes.",
-        image_url="https://example.com/chocolate_cake.jpg",
+        image_url="https://www.lilcookie.com/wp-content/uploads/2018/11/American_chocolate_cake3-square.jpg",
         user_id=admin.id,
     )
 
@@ -33,7 +33,7 @@ with app.app_context():
         title="Caesar Salad",
         ingredients="Romaine Lettuce, Croutons, Parmesan Cheese, Caesar Dressing",
         recipe="Toss lettuce with croutons, cheese, and dressing.",
-        image_url="https://example.com/caesar_salad.jpg",
+        image_url="https://tse2.mm.bing.net/th?id=OIP.kZjGjFoMefWXqiPmNjlHGAHaF5&pid=Api&P=0&h=220",
         user_id=admin.id,
     )
 
