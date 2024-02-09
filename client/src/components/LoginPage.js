@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useUser } from "./UserContext";
 
-const LoginPage = ({ setCurrentUser }) => {
+const LoginPage = () => {
+  const { login } = useUser();
   const [isLoginView, setIsLoginView] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,9 +24,7 @@ const LoginPage = ({ setCurrentUser }) => {
     const data = await response.json();
 
     if (response.ok) {
-      localStorage.setItem("userId", data.user.id); // Ensure data.user.id is the correct path to the user ID
-      localStorage.setItem("authToken", data.token); // Ensure data.token is the correct path to the token
-      setCurrentUser(data.user || data); // Adjust based on actual response structure
+      login(data.user || data, data.token);
       alert("Login successful!");
       history.push("/");
     } else {
@@ -42,9 +42,8 @@ const LoginPage = ({ setCurrentUser }) => {
     const data = await response.json();
 
     if (response.ok) {
-      // Optionally, handle login directly after signup
+      login(data.user || data, data.token);
       alert("Signup successful!");
-      setCurrentUser(data.user); // Optionally set the user on signup, if your backend returns the user
       history.push("/");
     } else {
       alert(`Signup failed: ${data.message || "Unknown error"}`);

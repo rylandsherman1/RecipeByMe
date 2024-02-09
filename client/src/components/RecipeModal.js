@@ -15,7 +15,7 @@ const RecipeModal = ({ isOpen, recipe, onClose }) => {
       {recipe && (
         <div>
           <h3>{recipe.title}</h3>
-          <img src={recipe.image_url} alt={recipe.title} />
+          {/* Image tag removed */}
           <p>Ingredients: {recipe.ingredients}</p>
           <p>Recipe: {recipe.recipe}</p>
           <button onClick={onClose}>Close</button>

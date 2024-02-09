@@ -8,7 +8,7 @@ const RecipeCard = ({ recipe, onCardClick }) => {
     title: recipe.title,
     ingredients: recipe.ingredients,
     recipe: recipe.recipe,
-    image: recipe.image,
+    image_url: recipe.image,
     // Add more fields as needed
   });
 
@@ -23,9 +23,9 @@ const RecipeCard = ({ recipe, onCardClick }) => {
     setLikes(liked ? likes - 1 : likes + 1);
   };
 
-  const handleCardClick = () => {
-    console.log("Opening detailed view for recipe:", recipe);
-  };
+  //   const handleCardClick = () => {
+  //     console.log("Opening detailed view for recipe:", recipe);
+  //   };
 
   const handleDeleteClick = async (e) => {
     e.stopPropagation();
@@ -52,7 +52,7 @@ const RecipeCard = ({ recipe, onCardClick }) => {
       title: editedRecipe.title,
       ingredients: editedRecipe.ingredients,
       recipe: editedRecipe.recipe,
-      image: editedRecipe.image,
+      image_url: editedRecipe.image,
       // Add more fields as needed
     };
 
@@ -91,7 +91,7 @@ const RecipeCard = ({ recipe, onCardClick }) => {
 
   return (
     <div className="recipe-card" onClick={() => onCardClick(recipe)}>
-      <img src={recipe.image_url} alt={recipe.title} className="recipe-image"/>
+      <img src={recipe.image_url} alt={recipe.title} className="recipe-image" />
       <h3>{recipe.title}</h3>
       {isEditing ? (
         <form onSubmit={handleEditSubmit}>
@@ -127,12 +127,12 @@ const RecipeCard = ({ recipe, onCardClick }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="image">Image URL</label>
+            <label htmlFor="image_url">Image URL</label>
             <input
               type="text"
-              id="image"
-              name="image"
-              value={editedRecipe.image}
+              id="image_url"
+              name="image_url"
+              value={editedRecipe.image_url}
               onChange={handleInputChange}
               required
             />

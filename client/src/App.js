@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import HomePage from "./components/HomePage";
@@ -7,40 +7,24 @@ import About from "./components/About";
 import LoginPage from "./components/LoginPage";
 import NewRecipeButton from "./components/NewRecipeButton";
 import { RecipesProvider } from "./components/RecipesContext";
+import { UserProvider } from "./components/UserContext"; // Ensure UserProvider is imported
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null); // State to track the current user
-
-  // Function to handle logout
-  const logout = () => {
-    alert("Logout successful!");
-    setCurrentUser(null); // Clear the current user
-    // Here you might also want to clear any stored tokens if using token-based authentication
-  };
-
   return (
-    <RecipesProvider>
-      <Router>
-        <NavBar currentUser={currentUser} logout={logout} />{" "}
-        {/* Pass currentUser and logout as props */}
-        <NewRecipeButton />
-        <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/myprofile">
-            <MyProfilePage />
-          </Route>
-          <Route path="/login">
-            {/* Pass setCurrentUser as a prop to LoginPage to update the user's state on successful login/signup */}
-            <LoginPage setCurrentUser={setCurrentUser} />
-          </Route>
-          <Route exact path="/">
-            <HomePage />
-          </Route>
-        </Switch>
-      </Router>
-    </RecipesProvider>
+    <UserProvider>
+      <RecipesProvider>
+        <Router>
+          <NavBar />
+          <NewRecipeButton />
+          <Switch>
+            <Route path="/about" component={About} />
+            <Route path="/myprofile" component={MyProfilePage} />
+            <Route path="/login" component={LoginPage} />
+            <Route exact path="/" component={HomePage} />
+          </Switch>
+        </Router>
+      </RecipesProvider>
+    </UserProvider>
   );
 }
 
