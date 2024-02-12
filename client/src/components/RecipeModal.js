@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
 
-Modal.setAppElement("#root"); // Assuming your root element has the ID 'root'
+Modal.setAppElement("#root"); // Set the app element to prevent screen readers from reading background content
 
 const RecipeModal = ({ isOpen, recipe, onClose }) => {
   return (
@@ -15,9 +15,16 @@ const RecipeModal = ({ isOpen, recipe, onClose }) => {
       {recipe && (
         <div>
           <h3>{recipe.title}</h3>
-          {/* Image tag removed */}
-          <p>Ingredients: {recipe.ingredients}</p>
-          <p>Recipe: {recipe.recipe}</p>
+          <p>
+            <strong>Category:</strong> {recipe.category}
+          </p>{" "}
+          {/* Display the recipe's category */}
+          <p>
+            <strong>Ingredients:</strong> {recipe.ingredients}
+          </p>
+          <p>
+            <strong>Recipe:</strong> {recipe.recipe}
+          </p>
           <button onClick={onClose}>Close</button>
         </div>
       )}

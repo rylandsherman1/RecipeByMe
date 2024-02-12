@@ -1,7 +1,5 @@
 from extensions import db
-from .Association import (
-    category_recipe,
-)  # Assuming you still need this for Category associations
+from .Association import category_recipe  # Import the association table
 
 
 class Recipe(db.Model):
@@ -9,23 +7,42 @@ class Recipe(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    ingredients = db.Column(db.Text, nullable=False)  # Text field for ingredients
-    recipe = db.Column(db.Text, nullable=False)  # Detailed instructions
-    image_url = db.Column(db.String(255))  # URL to the recipe image
+    ingredients = db.Column(db.Text, nullable=False)
+    recipe = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
+    # Define many-to-many relationship with Category using the association table
     categories = db.relationship(
-        "Category", secondary=category_recipe, back_populates="recipes"
+        "Category",
+        secondary=category_recipe,
+        backref=db.backref("recipes", lazy="dynamic"),
     )
+
+    def __init__(self, title, ingredients, recipe, image_url=None, user_id=None):
+        self.title = title
+        self.ingredients = ingredients
+        self.recipe = recipe
+        self.image_url = image_url
+        self.user_id = user_id
+
+    def add_category(self, category):
+        if category not in self.categories:
+            self.categories.append(category)
+
+    def remove_category(self, category):
+        if category in self.categories:
+            self.categories.remove(category)
 
     def serialize(self):
         return {
             "id": self.id,
             "title": self.title,
-            "ingredients": self.ingredients if self.ingredients else "",
-            "recipe": self.recipe if self.recipe else "",
-            "image_url": self.image_url if self.image_url else "",
+            "ingredients": self.ingredients,
+            "recipe": self.recipe,
+            "image_url": self.image_url,
             "user_id": self.user_id,
+            "categories": [category.name for category in self.categories],
         }
 
     def __repr__(self):

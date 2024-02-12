@@ -7,6 +7,7 @@ const SubmitRecipe = () => {
     ingredients: "",
     recipe: "",
     image_url: "",
+    category: "", // Added category to the form data state
   });
 
   const { addRecipe } = useRecipes();
@@ -23,7 +24,7 @@ const SubmitRecipe = () => {
     const authToken = localStorage.getItem("authToken");
 
     if (userId && authToken) {
-      const recipeData = { ...formData, image_url: formData.image, userId };
+      const recipeData = { ...formData, userId };
 
       try {
         const response = await fetch("http://localhost:5000/api/recipes", {
@@ -44,7 +45,13 @@ const SubmitRecipe = () => {
 
         const newRecipe = await response.json();
         addRecipe(newRecipe);
-        setFormData({ title: "", ingredients: "", recipe: "", image_url: "" });
+        setFormData({
+          title: "",
+          ingredients: "",
+          recipe: "",
+          image_url: "",
+          category: "",
+        }); // Reset form including category
       } catch (error) {
         console.error("Error submitting recipe:", error);
       }
@@ -91,15 +98,32 @@ const SubmitRecipe = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="image">Image URL</label>
+          <label htmlFor="image_url">Image URL</label>
           <input
             type="text"
-            id="image"
-            name="image"
-            value={formData.image}
+            id="image_url"
+            name="image_url"
+            value={formData.image_url}
             onChange={handleInputChange}
             required
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="category">Category</label>
+          <select
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Select a Category</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Appetizers">Appetizers</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
+            <option value="Dessert">Dessert</option>
+          </select>
         </div>
         <div className="form-group">
           <button type="submit">Submit Recipe</button>

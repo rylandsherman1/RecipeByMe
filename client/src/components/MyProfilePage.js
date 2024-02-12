@@ -1,11 +1,10 @@
 import React from "react";
 import RecipeCard from "./RecipeCard"; // Assuming RecipeCard is a component you use to display each recipe
+import { useRecipes } from "./RecipesContext"; // Import useRecipes hook from your RecipesContext
 
-const MyProfilePage = ({
-  currentUser,
-  userRecipes = [],
-  likedRecipes = [],
-}) => {
+const MyProfilePage = ({ currentUser }) => {
+  const { recipes, likedRecipes } = useRecipes(); // Use the useRecipes hook to get recipes and likedRecipes
+
   // Check if currentUser is defined before accessing its properties
   const profileHeader = currentUser
     ? `${currentUser.username}'s Profile`
@@ -13,9 +12,14 @@ const MyProfilePage = ({
 
   // Filtering user's own recipes, ensure currentUser is defined
   const myRecipes = currentUser
-    ? userRecipes.filter((recipe) => recipe.userId === currentUser.id)
+    ? recipes.filter((recipe) => recipe.userId === currentUser.id)
     : [];
-  const myLikedRecipes = currentUser ? likedRecipes : [];
+
+  // Filter recipes that are liked by the current user
+  const myLikedRecipes =
+    likedRecipes.length > 0
+      ? recipes.filter((recipe) => likedRecipes.includes(recipe.id))
+      : [];
 
   // Conditional rendering based on available recipes
   const renderRecipes = (recipes, sectionTitle) => {
