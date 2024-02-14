@@ -17,14 +17,19 @@ const RecipeModal = ({ isOpen, recipe, onClose }) => {
           <h3>{recipe.title}</h3>
           <p>
             <strong>Category:</strong>{" "}
-            {recipe.categories ? recipe.categories[0] : "No category"}
-          </p>{" "}
-          {/* Display the first category */}
+            {recipe.categories ? recipe.categories.join(", ") : "No category"}{" "}
+            {/* Updated to join categories if there are multiple */}
+          </p>
           <p>
             <strong>Ingredients:</strong> {recipe.ingredients}
           </p>
           <p>
             <strong>Recipe:</strong> {recipe.recipe}
+          </p>
+          <p>
+            <strong>Rating:</strong>{" "}
+            {recipe.rating ? recipe.rating : "No rating"}{" "}
+            {/* Display the rating */}
           </p>
           <button onClick={onClose}>Close</button>
         </div>

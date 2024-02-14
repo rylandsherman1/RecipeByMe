@@ -9,13 +9,16 @@ const RecipeCard = ({ recipe, onCardClick }) => {
     ingredients: recipe.ingredients,
     recipe: recipe.recipe,
     image_url: recipe.image_url,
-    categories: recipe.categories, // Update to handle categories
+    categories: recipe.categories,
+    rating: recipe.rating,
   });
 
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(
     recipe.initialLikes || Math.floor(Math.random() * 100)
   );
+
+  const rating = recipe.rating ? recipe.rating : "No rating";
 
   const handleLikeClick = (e) => {
     e.stopPropagation();
@@ -52,7 +55,8 @@ const RecipeCard = ({ recipe, onCardClick }) => {
       ingredients: editedRecipe.ingredients,
       recipe: editedRecipe.recipe,
       image_url: editedRecipe.image_url,
-      categories: editedRecipe.categories, // Update to handle categories
+      categories: editedRecipe.categories,
+      rating: parseInt(editedRecipe.rating),
     };
 
     try {
@@ -91,8 +95,8 @@ const RecipeCard = ({ recipe, onCardClick }) => {
     <div className="recipe-card" onClick={() => onCardClick(recipe)}>
       <img src={recipe.image_url} alt={recipe.title} className="recipe-image" />
       <h3>{recipe.title}</h3>
-      <p>Category: {recipe.categories.join(", ")}</p>{" "}
-      {/* Update to handle categories */}
+      <p>Category: {recipe.categories.join(", ")}</p> <p>Rating: {rating}</p>{" "}
+      {/* Display average rating */}
       {isEditing ? (
         <form onClick={handleFormClick} onSubmit={handleEditSubmit}>
           <div className="form-group">
@@ -154,6 +158,23 @@ const RecipeCard = ({ recipe, onCardClick }) => {
               }
               required
             />
+          </div>
+          <div className="form-group">
+            <label htmlFor="rating">Rating</label>
+            <select
+              id="rating"
+              name="rating"
+              value={editedRecipe.rating}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select a Rating</option>
+              {[1, 2, 3, 4, 5].map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))}
+            </select>
           </div>
           <button type="submit">Save</button>
         </form>
