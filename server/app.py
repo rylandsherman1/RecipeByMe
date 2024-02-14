@@ -82,21 +82,24 @@ def create_app(config_class=Config):
                 if not user:
                     return {"message": "Authentication required"}, 401
 
-                category_name = data.get("category")
-                category = Category.query.filter_by(name=category_name).first()
-                if not category and category_name:
-                    category = Category(name=category_name)
-                    db.session.add(category)
-
                 new_recipe = Recipe(
                     title=data["title"],
                     ingredients=data["ingredients"],
                     recipe=data["recipe"],
                     image_url=data.get("image_url", ""),
                     user_id=user.id,
-                    categories=[category] if category else [],
                 )
                 db.session.add(new_recipe)
+
+                # Handle categories separately
+                category_name = data.get("category")
+                if category_name:
+                    category = Category.query.filter_by(name=category_name).first()
+                    if not category:
+                        category = Category(name=category_name)
+                        db.session.add(category)
+                    new_recipe.add_category(category)
+
                 db.session.commit()
                 return jsonify(new_recipe.serialize()), 201
             except Exception as e:

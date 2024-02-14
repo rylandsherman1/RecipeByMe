@@ -91,7 +91,7 @@ const RecipeCard = ({ recipe, onCardClick }) => {
     <div className="recipe-card" onClick={() => onCardClick(recipe)}>
       <img src={recipe.image_url} alt={recipe.title} className="recipe-image" />
       <h3>{recipe.title}</h3>
-      <p>Categories: {recipe.categories.join(", ")}</p>{" "}
+      <p>Category: {recipe.categories.join(", ")}</p>{" "}
       {/* Update to handle categories */}
       {isEditing ? (
         <form onClick={handleFormClick} onSubmit={handleEditSubmit}>

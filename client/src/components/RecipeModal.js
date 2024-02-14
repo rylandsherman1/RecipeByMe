@@ -16,9 +16,10 @@ const RecipeModal = ({ isOpen, recipe, onClose }) => {
         <div>
           <h3>{recipe.title}</h3>
           <p>
-            <strong>Category:</strong> {recipe.category}
+            <strong>Category:</strong>{" "}
+            {recipe.categories ? recipe.categories[0] : "No category"}
           </p>{" "}
-          {/* Display the recipe's category */}
+          {/* Display the first category */}
           <p>
             <strong>Ingredients:</strong> {recipe.ingredients}
           </p>
