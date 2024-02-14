@@ -1,8 +1,8 @@
-### RecipeByMe
+# RecipeByMe
 
 ## Creator
 
-# Ryland Sherman
+## Ryland Sherman
 
 LinkedIn: https://www.linkedin.com/in/ryland-sherman/
 
@@ -68,7 +68,7 @@ Contributions are welcome! Please feel free to submit a pull request.
 
 ## License
 
-# Learn.co Educational Content License
+## Learn.co Educational Content License
 
 Copyright (c) 2021 Flatiron School, Inc
 
