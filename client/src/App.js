@@ -8,6 +8,7 @@ import LoginPage from "./components/LoginPage";
 import NewRecipeButton from "./components/NewRecipeButton";
 import { RecipesProvider } from "./components/RecipesContext";
 import { UserProvider } from "./components/UserContext"; // Ensure UserProvider is imported
+import Contact from "./components/Contact";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Switch>
             <Route path="/about" component={About} />
             <Route path="/myprofile" component={MyProfilePage} />
+            <Route path="/contact" component={Contact} />
             <Route path="/login" component={LoginPage} />
             <Route exact path="/" component={HomePage} />
           </Switch>

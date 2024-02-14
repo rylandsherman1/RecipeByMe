@@ -27,6 +27,11 @@ const NavBar = () => {
             My Profile
           </Link>
         </li>
+        <li className="nav-item">
+          <Link to="/contact" className="nav-link">
+            Contact Us
+          </Link>
+        </li>
         {!currentUser ? (
           <li className="nav-item">
             <Link to="/login" className="nav-link">
