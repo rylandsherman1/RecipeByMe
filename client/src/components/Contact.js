@@ -15,6 +15,9 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
+    alert(
+      "Form submitted successfully, we will be in touch as soon as possible. Thank you for using RecipeByMe!"
+    );
     // Clear form after submission
     setFormData({
       name: "",

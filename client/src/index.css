@@ -10,21 +10,21 @@ p {
 
 /* Set a background color for the entire page */
 body {
-  background-color: #f0f0f0;
+  background-color: #b5b1b1;
   font-family: Arial, sans-serif;
 }
 
 /* Style the navigation bar */
 nav {
-  background-color: #333;
-  color: #fff;
+  background-color: #450000;
+  color: #b5b1b1;
   padding: 1rem;
   display: flex;
   justify-content: flex-end;
 }
 
 nav a {
-  color: #fff;
+  color: #450000;
   text-decoration: none;
   margin-left: 1rem;
 }
@@ -34,7 +34,7 @@ nav a {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 1rem;
-  background-color: #fff;
+  background-color: #b5b1b1;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
@@ -55,13 +55,14 @@ nav a {
 /* Individual recipe cards */
 .recipe-card {
   position: relative; /* Needed for absolute positioning of the like button */
-  background-color: #fff;
+  background-color: #450000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   overflow: hidden;
   cursor: pointer;
   display: flex; /* Use flex layout */
   flex-direction: column; /* Stack children vertically */
+  color: #b5b1b1;
   /* Remove margin if using grid-gap */
 }
 
@@ -94,12 +95,12 @@ nav a {
 
 .like-count {
   margin-left: 10px;
-  font-size: 1rem; /* Adjust size as needed */
+  font-size: 0.8rem; /* Adjust size as needed */
 }
 
 /* Style the recipe modal (customize as needed) */
 .recipe-modal {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #450000;
   position: fixed;
   top: 0;
   left: 0;
@@ -112,7 +113,8 @@ nav a {
 }
 
 .recipe-modal-content {
-  background-color: #fff;
+  background-color: #450000;
+  color: #b5b1b1;
   max-width: 80%;
   max-height: 80%;
   overflow-y: auto;
@@ -136,8 +138,8 @@ nav a {
 
 /* Adjusting the navbar to space content */
 nav.navbar {
-  background-color: #333;
-  color: #fff;
+  background-color: #450000;
+  color: #b5b1b1;
   padding: 1rem;
   display: flex;
   justify-content: space-between; /* Adjusted to space-between */
@@ -146,7 +148,7 @@ nav.navbar {
 
 /* Style for the site title inside the navbar */
 .navbar .site-title {
-  color: #fff;
+  color: #b5b1b1;
   margin: 0;
   font-size: 1.5rem; /* Adjust font size as needed */
 }
@@ -164,7 +166,7 @@ nav.navbar {
 }
 
 .navbar .nav-list .nav-item .nav-link {
-  color: #fff;
+  color: #b5b1b1;
   text-decoration: none;
 }
 
@@ -179,9 +181,9 @@ nav.navbar {
   font-size: 24px;
   text-align: center;
   line-height: 50px;
-  background-color: #5db6ff;
-  color: white;
-  border: none;
+  background-color: #b5b1b1;
+  color: #450000;
+  border: #450000;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for better visibility */
 }
@@ -191,8 +193,8 @@ nav.navbar {
   position: absolute;
   bottom: 60px; /* Adjust as needed */
   right: 0;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
+  background-color: #b5b1b1;
+  border: 1px solid #b5b1b1;
   padding: 10px;
   /* Any other styles for the form */
 }
@@ -208,7 +210,9 @@ nav.navbar {
   padding: 10px;
   margin: 10px 0;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #450000;
+  background-color: #450000; /* Set background color */
+  color: #b5b1b1; /* Set text color */
 }
 
 /* Style the contact form container */
@@ -216,14 +220,14 @@ nav.navbar {
   max-width: 800px;
   margin: 2rem auto;
   padding: 1rem;
-  background-color: #fff;
+  background-color: #450000; /* Dark red background */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
 
 /* Style the form elements */
 .contact-form h2 {
-  color: #333;
+  color: #b5b1b1; /* Light gray text */
   margin-bottom: 1rem;
 }
 
@@ -234,6 +238,7 @@ nav.navbar {
 .contact-form label {
   display: block;
   margin-bottom: 0.5rem;
+  color: #b5b1b1; /* Light gray text for labels */
 }
 
 .contact-form input[type="text"],
@@ -241,8 +246,10 @@ nav.navbar {
 .contact-form textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid #ccc; /* Lighter border for inputs */
   border-radius: 5px;
+  background-color: #b5b1b1; /* Slightly lighter dark red for inputs */
+  color: #b5b1b1; /* Light gray text for input content */
 }
 
 .contact-form textarea {
@@ -252,7 +259,7 @@ nav.navbar {
 
 .contact-form button[type="submit"] {
   padding: 0.5rem 1rem;
-  background-color: #5db6ff;
+  background-color: #b5b1b1; /* Keep the button color for contrast */
   color: white;
   border: none;
   border-radius: 5px;
@@ -262,6 +269,28 @@ nav.navbar {
 
 .contact-form button[type="submit"]:hover {
   background-color: #4a9cd8;
+}
+
+.about {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #450000; /* Dark red background */
+  color: #b5b1b1; /* Light gray text */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.about h2 {
+  color: #b5b1b1; /* Light gray for headers */
+  margin-bottom: 1rem;
+  text-align: center; /* Center the heading */
+}
+
+.about p {
+  margin-bottom: 1rem;
+  line-height: 1.6; /* Improve readability */
+  text-align: justify; /* Justify the text for a cleaner look */
 }
 
 /* Add more styles as needed for other components */
