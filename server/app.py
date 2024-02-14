@@ -56,7 +56,14 @@ def create_app(config_class=Config):
             user = User.query.filter_by(email=data["email"]).first()
             if user and user.check_password(data["password"]):
                 token = generate_token(user.id)
-                return {"message": "Login successful.", "token": token}, 200
+                return {
+                    "message": "Login successful.",
+                    "token": token,
+                    "user": {
+                        "username": user.username,
+                        "email": user.email,
+                    },  # Include user details
+                }, 200
             else:
                 return {"message": "Invalid credentials."}, 401
 

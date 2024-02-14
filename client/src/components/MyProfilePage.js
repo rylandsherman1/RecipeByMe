@@ -1,41 +1,50 @@
-import React from "react";
-import RecipeCard from "./RecipeCard"; // Assuming RecipeCard is a component you use to display each recipe
-import { useRecipes } from "./RecipesContext"; // Import useRecipes hook from your RecipesContext
+import React, { useState } from "react";
+import RecipeCard from "./RecipeCard";
+import RecipeModal from "./RecipeModal"; // Assuming you have a RecipeModal component
+import { useRecipes } from "./RecipesContext";
 
 const MyProfilePage = ({ currentUser }) => {
-  const { recipes, likedRecipes } = useRecipes(); // Use the useRecipes hook to get recipes and likedRecipes
+  const { recipes, likedRecipes } = useRecipes();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
-  // Check if currentUser is defined before accessing its properties
+  const onCardClick = (recipe) => {
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedRecipe(null);
+  };
+
   const profileHeader = currentUser
     ? `${currentUser.username}'s Profile`
     : "Profile";
 
-  // Filtering user's own recipes, ensure currentUser is defined
-  const myRecipes = currentUser
-    ? recipes.filter((recipe) => recipe.userId === currentUser.id)
-    : [];
-
-  // Filter recipes that are liked by the current user
   const myLikedRecipes =
     likedRecipes.length > 0
       ? recipes.filter((recipe) => likedRecipes.includes(recipe.id))
       : [];
 
-  // Conditional rendering based on available recipes
-  const renderRecipes = (recipes, sectionTitle) => {
-    if (recipes.length > 0) {
+  const renderLikedRecipes = (likedRecipes) => {
+    if (likedRecipes.length > 0) {
       return (
         <section>
-          <h3>{sectionTitle}</h3>
+          <h3>Recipes I Like</h3>
           <div className="recipe-grid">
-            {recipes.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
+            {likedRecipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                onCardClick={onCardClick}
+              />
             ))}
           </div>
         </section>
       );
     }
-    return <p>No {sectionTitle.toLowerCase()} available.</p>;
+    return <p>No liked recipes available.</p>;
   };
 
   return (
@@ -45,12 +54,14 @@ const MyProfilePage = ({ currentUser }) => {
         <div className="user-details">
           <p>Username: {currentUser.username}</p>
           <p>Email: {currentUser.email}</p>
-          {/* Display other user details here */}
         </div>
       )}
-
-      {renderRecipes(myRecipes, "My Recipes")}
-      {renderRecipes(myLikedRecipes, "Recipes I Like")}
+      {renderLikedRecipes(myLikedRecipes)}
+      <RecipeModal
+        isOpen={isModalOpen}
+        recipe={selectedRecipe}
+        onClose={closeModal}
+      />
     </div>
   );
 };
