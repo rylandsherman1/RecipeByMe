@@ -6,7 +6,7 @@ from itsdangerous import URLSafeTimedSerializer
 from flask_cors import CORS
 from extensions import db, migrate
 from config import Config
-from models import User, Recipe, Category
+from models import User, Recipe, Category, Rating
 
 
 # Function to create the Flask application
@@ -88,6 +88,7 @@ def create_app(config_class=Config):
                     recipe=data["recipe"],
                     image_url=data.get("image_url", ""),
                     user_id=user.id,
+                    rating=data.get("rating"),
                 )
                 db.session.add(new_recipe)
 
@@ -148,11 +149,58 @@ def create_app(config_class=Config):
                 current_app.logger.error(f"Error deleting recipe: {e}")
                 return {"message": "Error deleting recipe"}, 400
 
+    class RecipeRating(Resource):
+        def post(self, recipe_id):
+            data = request.get_json()
+            user = verify_token(request.headers.get("Authorization").split(" ")[1])
+            if not user:
+                return {"message": "Authentication required"}, 401
+
+            # Check if the recipe exists
+            recipe = Recipe.query.get(recipe_id)
+            if not recipe:
+                return {"message": "Recipe not found"}, 404
+
+            # Check for the rating in the request
+            rating_value = data.get("rating")
+            if rating_value is None:
+                return {"message": "Rating value is required"}, 400
+
+            # Optional: Validate the rating value (e.g., must be between 1 and 5)
+            if not 1 <= rating_value <= 5:
+                return {"message": "Invalid rating value"}, 400
+
+            # Create and save the new rating
+            new_rating = Rating(
+                rating=rating_value, user_id=user.id, recipe_id=recipe_id
+            )
+            db.session.add(new_rating)
+            db.session.commit()
+
+            return {"message": "Rating added successfully"}, 201
+
+        def get(self, recipe_id):
+            # Check if the recipe exists
+            recipe = Recipe.query.get(recipe_id)
+            if not recipe:
+                return {"message": "Recipe not found"}, 404
+
+            # Calculate the average rating
+            average_rating = (
+                db.session.query(db.func.avg(Rating.rating))
+                .filter(Rating.recipe_id == recipe_id)
+                .scalar()
+            )
+            average_rating = round(average_rating, 2) if average_rating else None
+
+            return {"averageRating": average_rating}, 200
+
     # Add resources to Api
     api.add_resource(UserSignup, "/api/signup")
     api.add_resource(UserLogin, "/api/login")
     api.add_resource(RecipeList, "/api/recipes")
     api.add_resource(RecipeDetail, "/api/recipes/<int:recipe_id>")
+    api.add_resource(RecipeRating, "/api/recipes/<int:recipe_id>/rating")
 
     @app.route("/")
     def index():

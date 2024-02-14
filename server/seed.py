@@ -37,8 +37,9 @@ with app.app_context():
         recipe="Mix dry ingredients. Add eggs, milk, and oil. Bake at 350°F for 30 minutes.",
         image_url="https://www.lilcookie.com/wp-content/uploads/2018/11/American_chocolate_cake3-square.jpg",
         user_id=admin.id,
+        rating=5,
     )
-    recipe1.add_category(dessert)  # Associate dessert category with recipe1
+    recipe1.categories.append(dessert)
 
     recipe2 = Recipe(
         title="Caesar Salad",
@@ -46,18 +47,19 @@ with app.app_context():
         recipe="Toss lettuce with croutons, cheese, and dressing.",
         image_url="https://tse2.mm.bing.net/th?id=OIP.kZjGjFoMefWXqiPmNjlHGAHaF5&pid=Api&P=0&w=300&h=300",
         user_id=admin.id,
+        rating=4,
     )
-    recipe2.add_category(appetizers)  # Associate appetizers category with recipe2
+    recipe2.categories.append(appetizers)
 
-    # Optionally, add more recipes for lunch and dinner categories
     recipe3 = Recipe(
         title="Grilled Chicken Sandwich",
         ingredients="Chicken Breast, Lettuce, Tomato, Mayonnaise, Whole Wheat Bread",
         recipe="Grill the chicken breast and assemble the sandwich with lettuce, tomato, and mayonnaise.",
         image_url="https://files.oaiusercontent.com/file-FlnqNNmLm1lKY6sfBgY8SvSu?se=2024-02-14T02%3A58%3A37Z&sp=r&sv=2021-08-06&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3D3837cdcd-1d68-456e-adaa-b4c8cdb76f80.webp&sig=0odAyjoHImDYhhSJTeokdwBImpe6ReQ0icVVRl7%2BePA%3D",
         user_id=admin.id,
+        rating=3,
     )
-    recipe3.add_category(lunch)  # Associate lunch category with recipe3
+    recipe3.categories.append(lunch)
 
     recipe4 = Recipe(
         title="Spaghetti Bolognese",
@@ -65,12 +67,11 @@ with app.app_context():
         recipe="Cook spaghetti. Sauté onion and garlic, add ground beef until browned, mix in tomato sauce.",
         image_url="https://files.oaiusercontent.com/file-hNm5F1wpayv9rAFphDGW3ja8?se=2024-02-14T03%3A01%3A08Z&sp=r&sv=2021-08-06&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3Dad111e23-b63f-4c97-8b3e-c1289e9562fa.webp&sig=X73S9xXrmEVLgX%2BusA6BK654KFY6p4dd5TZecaaiIhI%3D",
         user_id=admin.id,
+        rating=5,
     )
-    recipe4.add_category(dinner)  # Associate dinner category with recipe4
+    recipe4.categories.append(dinner)
 
     db.session.add_all([recipe1, recipe2, recipe3, recipe4])
-
-    # Commit the changes
-    db.session.commit()
+    db.session.commit()  # Commit the changes
 
     print("Database seeded!")

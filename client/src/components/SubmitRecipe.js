@@ -7,7 +7,8 @@ const SubmitRecipe = () => {
     ingredients: "",
     recipe: "",
     image_url: "",
-    category: "", // Added category to the form data state
+    category: "",
+    rating: "",
   });
 
   const { addRecipe } = useRecipes();
@@ -24,7 +25,11 @@ const SubmitRecipe = () => {
     const authToken = localStorage.getItem("authToken");
 
     if (userId && authToken) {
-      const recipeData = { ...formData, userId };
+      const recipeData = {
+        ...formData,
+        userId,
+        rating: parseInt(formData.rating),
+      };
 
       try {
         const response = await fetch("http://localhost:5000/api/recipes", {
@@ -51,6 +56,7 @@ const SubmitRecipe = () => {
           recipe: "",
           image_url: "",
           category: "",
+          rating: "",
         }); // Reset form including category
       } catch (error) {
         console.error("Error submitting recipe:", error);
@@ -123,6 +129,24 @@ const SubmitRecipe = () => {
             <option value="Lunch">Lunch</option>
             <option value="Dinner">Dinner</option>
             <option value="Dessert">Dessert</option>
+          </select>
+        </div>
+        {/* Rating field added here */}
+        <div className="form-group">
+          <label htmlFor="rating">Rating</label>
+          <select
+            id="rating"
+            name="rating"
+            value={formData.rating}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Select a Rating</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
           </select>
         </div>
         <div className="form-group">

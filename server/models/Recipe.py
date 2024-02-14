@@ -11,6 +11,7 @@ class Recipe(db.Model):
     recipe = db.Column(db.Text, nullable=False)
     image_url = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    rating = db.Column(db.Integer)  # New attribute to store the recipe rating
 
     # Define many-to-many relationship with Category using the association table
     categories = db.relationship(
@@ -19,12 +20,15 @@ class Recipe(db.Model):
         backref=db.backref("recipes", lazy="dynamic"),
     )
 
-    def __init__(self, title, ingredients, recipe, image_url=None, user_id=None):
+    def __init__(
+        self, title, ingredients, recipe, image_url=None, user_id=None, rating=None
+    ):
         self.title = title
         self.ingredients = ingredients
         self.recipe = recipe
         self.image_url = image_url
         self.user_id = user_id
+        self.rating = rating  # Initialize rating
 
     def add_category(self, category):
         if category not in self.categories:
@@ -43,6 +47,7 @@ class Recipe(db.Model):
             "image_url": self.image_url,
             "user_id": self.user_id,
             "categories": [category.name for category in self.categories],
+            "rating": self.rating,  # Include rating in serialized data
         }
 
     def __repr__(self):
