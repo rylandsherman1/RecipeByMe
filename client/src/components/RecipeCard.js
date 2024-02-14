@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useRecipes } from "./RecipesContext";
 
 const RecipeCard = ({ recipe, onCardClick }) => {
-  const { deleteRecipe } = useRecipes();
+  const { deleteRecipe, likeRecipe } = useRecipes();
   const [isEditing, setIsEditing] = useState(false);
   const [editedRecipe, setEditedRecipe] = useState({
     title: recipe.title,
     ingredients: recipe.ingredients,
     recipe: recipe.recipe,
-    image_url: recipe.image,
-    // Add more fields as needed
+    image_url: recipe.image_url,
+    categories: recipe.categories, // Update to handle categories
   });
 
   const [liked, setLiked] = useState(false);
@@ -20,12 +20,8 @@ const RecipeCard = ({ recipe, onCardClick }) => {
   const handleLikeClick = (e) => {
     e.stopPropagation();
     setLiked(!liked);
-    setLikes(liked ? likes - 1 : likes + 1);
+    likeRecipe(recipe.id);
   };
-
-  //   const handleCardClick = () => {
-  //     console.log("Opening detailed view for recipe:", recipe);
-  //   };
 
   const handleDeleteClick = async (e) => {
     e.stopPropagation();
@@ -42,22 +38,24 @@ const RecipeCard = ({ recipe, onCardClick }) => {
     setIsEditing(true);
   };
 
+  const handleFormClick = (e) => {
+    e.stopPropagation(); // This stops the form click from propagating up to the recipe card
+  };
+
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Create a new object with the updated data
     const updatedRecipe = {
       id: recipe.id,
       title: editedRecipe.title,
       ingredients: editedRecipe.ingredients,
       recipe: editedRecipe.recipe,
-      image_url: editedRecipe.image,
-      // Add more fields as needed
+      image_url: editedRecipe.image_url,
+      categories: editedRecipe.categories, // Update to handle categories
     };
 
     try {
-      // Make an API request to update the recipe
       const response = await fetch(
         `http://localhost:5000/api/recipes/${recipe.id}`,
         {
@@ -93,8 +91,10 @@ const RecipeCard = ({ recipe, onCardClick }) => {
     <div className="recipe-card" onClick={() => onCardClick(recipe)}>
       <img src={recipe.image_url} alt={recipe.title} className="recipe-image" />
       <h3>{recipe.title}</h3>
+      <p>Categories: {recipe.categories.join(", ")}</p>{" "}
+      {/* Update to handle categories */}
       {isEditing ? (
-        <form onSubmit={handleEditSubmit}>
+        <form onClick={handleFormClick} onSubmit={handleEditSubmit}>
           <div className="form-group">
             <label htmlFor="title">Title</label>
             <input
@@ -134,6 +134,24 @@ const RecipeCard = ({ recipe, onCardClick }) => {
               name="image_url"
               value={editedRecipe.image_url}
               onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="categories">Categories</label>
+            <input
+              type="text"
+              id="categories"
+              name="categories"
+              value={editedRecipe.categories.join(", ")}
+              onChange={(e) =>
+                setEditedRecipe({
+                  ...editedRecipe,
+                  categories: e.target.value
+                    .split(",")
+                    .map((cat) => cat.trim()),
+                })
+              }
               required
             />
           </div>
