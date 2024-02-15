@@ -294,3 +294,65 @@ nav.navbar {
 }
 
 /* Add more styles as needed for other components */
+
+.login-page {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #450000; /* Dark red background */
+  color: #b5b1b1; /* Light gray text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.login-page h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #b5b1b1; /* Light gray border */
+  background-color: #5f0000; /* Slightly lighter red for input background */
+  color: #b5b1b1; /* Light gray text */
+  border-radius: 4px;
+}
+
+.form-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-action button {
+  width: 100%;
+  padding: 0.5rem 0;
+  margin: 0.5rem 0;
+  background-color: #b5b1b1; /* Light gray buttons */
+  color: #450000; /* Dark red text */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-action button:hover {
+  background-color: #a49b9b; /* Slightly darker gray for hover effect */
+}
+
+/* You might want to add some custom styles for inputs focus state */
+.form-group input:focus {
+  outline: none;
+  border-color: #a49b9b;
+  box-shadow: 0 0 0 2px rgba(164, 155, 155, 0.2);
+}
